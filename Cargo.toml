@@ -1,0 +1,10 @@
+[package]
+name = "chaos"
+version = "0.1.0"
+authors = ["Nathan <nathan@mongodb.com>"]
+edition = "2018"
+
+[dependencies]
+ggez = "0.4"
+typed-builder = "0.1.1"
+rand = "0.6"
