@@ -20,13 +20,33 @@ struct MainState {
     point_a: Point,
     point_b: Point,
     point_c: Point,
-    random: Point,
+    point_d: Point,
+    point_e: Point,
+    random: RandomPoint,
 }
 
 struct Point {
     x: f32,
     y: f32,
     point: Point2,
+}
+
+struct RandomPoint {
+    x: f32,
+    y: f32,
+    point: Point2,
+    vertex: usize,
+}
+
+impl RandomPoint {
+    fn new(x: f32, y: f32, vertex: usize) -> Self {
+        RandomPoint {
+            x,
+            y,
+            point: Point2::new(x, y),
+            vertex,
+        }
+    }
 }
 
 impl Point {
@@ -42,35 +62,55 @@ impl Point {
 impl MainState {
     fn new(_ctx: &mut Context) -> GameResult<MainState> {
         Ok(MainState::builder()
-            .point_a(Point::new(10.0, 1590.0))
-            .point_b(Point::new(1590.0, 1590.0))
-            .point_c(Point::new(790.0, 200.0))
-            .random(Point::new(10.0, 1590.0))
-            .build())
+           .point_a(Point::new(800.0, 0.0))
+           .point_b(Point::new(39.0, 553.0))
+           .point_c(Point::new(330.0, 1447.0))
+           .point_d(Point::new(1270.0, 1447.0))
+           .point_e(Point::new(1561.0, 553.0))
+           .random(RandomPoint::new(800.0, 0.0, 0))
+           .build())
     }
 }
 
 impl event::EventHandler for MainState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         let mut rng = rand::thread_rng();
-        match rng.gen_range(0, 3) {
+        let mut newPoint = rng.gen_range(0, 5);
+        let mut diff = (newPoint as i8 - self.random.vertex as i8).abs();
+        while diff == 1 || diff == 4 {
+            newPoint = rng.gen_range(0, 5);
+            diff = (newPoint as i8 - self.random.vertex as i8).abs();
+        }
+        match newPoint {
             0 => {
                 let midX = (self.point_a.x + self.random.x) / 2.0;
                 let midY = (self.point_a.y + self.random.y) / 2.0;
-                self.random = Point::new(midX, midY);
+                self.random = RandomPoint::new(midX, midY, 0);
                 graphics::set_color(ctx, graphics::Color::from_rgb(0, 255, 0))?;
             }
             1 => {
                 let midX = (self.point_b.x + self.random.x) / 2.0;
                 let midY = (self.point_b.y + self.random.y) / 2.0;
-                self.random = Point::new(midX, midY);
+                self.random = RandomPoint::new(midX, midY, 1);
                 graphics::set_color(ctx, graphics::Color::from_rgb(0, 0, 255))?;
             }
             2 => {
                 let midX = (self.point_c.x + self.random.x) / 2.0;
                 let midY = (self.point_c.y + self.random.y) / 2.0;
-                self.random = Point::new(midX, midY);
+                self.random = RandomPoint::new(midX, midY, 2);
                 graphics::set_color(ctx, graphics::Color::from_rgb(255, 0, 0))?;
+            }
+            3 => {
+                let midX = (self.point_d.x + self.random.x) / 2.0;
+                let midY = (self.point_d.y + self.random.y) / 2.0;
+                self.random = RandomPoint::new(midX, midY, 3);
+                graphics::set_color(ctx, graphics::Color::from_rgb(255, 255, 0))?;
+            }
+            4 => {
+                let midX = (self.point_e.x + self.random.x) / 2.0;
+                let midY = (self.point_e.y + self.random.y) / 2.0;
+                self.random = RandomPoint::new(midX, midY, 4);
+                graphics::set_color(ctx, graphics::Color::from_rgb(0, 255, 255))?;
             }
             _ => (),
         }
